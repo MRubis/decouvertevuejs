@@ -6,7 +6,8 @@ const props = defineProps({
 
 <template >
   <p>{{ city.name }}</p>
-  <p>{{ city.weather }}</p>
+  <p>{{ city.weather[0].description }}</p>
   <p>{{ city.temperature }}</p>
   <p>{{ city.updatedAt }}</p>
+ 
 </template>
