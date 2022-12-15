@@ -1,22 +1,31 @@
 <script>
 import City from "./City.vue";
 import axios from "axios";
+
 export default {
   components: { City },
   data() {
     return {
       cities: [],
-      loading: true,
+      loading: false,
       errored: false,
     };
   },
   created() {
+    this.loading = true;
+
+    // essayer async await
     axios
       .get(
         "https://api.openweathermap.org/data/2.5/find?lat=45.188&lon=5.724&cnt=20&cluster=yes&lang=fr&units=metric&APPID=79b41523ca2afacea5d999662ab73c01"
       )
       .then((response) => {
-        this.cities = response.data.list;
+        // Insérer dans this.cities uniquement les propriétés utiles (en utilisant .map())
+        this.cities = response.data.list.map((object) => ({
+          name: object.name,
+          weather: object.weather[0].description,
+          updatedAt: object.dt,
+        }));
       })
 
       .catch((error) => {
@@ -30,14 +39,16 @@ export default {
 
 <template>
   <City v-for="city in cities" :key="city" :city="city" />
-   <section v-if="errored">
-    <p id="red">We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
+  <section v-if="errored">
+    <p id="red">
+      We're sorry, we're not able to retrieve this information at the moment,
+      please try back later
+    </p>
   </section>
 
-   <section v-else>
+  <section v-else>
     <div v-if="loading">Requête en cours</div>
-    </section>
-
+  </section>
 </template>
 
 <style scoped>
@@ -62,7 +73,7 @@ h3 {
     text-align: left;
   }
 }
-#red{
-  color:red;
+#red {
+  color: red;
 }
 </style>
